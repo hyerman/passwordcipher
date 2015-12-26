@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<HTML>
+ <HEAD>
+  <TITLE> Password Cipher </TITLE>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
+	<style>
+		@viewport {
+			width: 100%;
+		}
+		table {width:360px;}
+		.inputs_in_output {width:330px;}
+		.no_inputs_in_output {width:200px;margin: 0 auto;}
+		.width50 {width:50%;}
+		#pwapp {
+			width:360px;
+			margin: auto;
+		} 
+		#settings_page {
+			width:360px;
+			margin: auto;
+		} 
+		#demo_page {
+			width:360px;
+			margin: auto;
+			font-weight: bold;
+		} 
+		#help_page {
+			width:360px; 
+			font-size:small;
+			margin: auto;
+		}
+		#help_div{
+			min-height: 600px;
+		}
+		#demo_div{
+			min-height: 800px;
+		}
+		#output_string {
+			min-height: 400px;
+			background-color: rgba(153,204,255,1.0);
+		}
+		.cen_unl {text-align: center; border-bottom-width: 1px; border-bottom: solid;}
+		.cen_unl_light {text-align: center; border-bottom-width: 1px; border-bottom: solid; border-bottom-color: darkgray;}
+		.mychar {text-transform: lowercase;} /* for uc and lc of results */
+		.grayback {background-color: green;}
+		#error_message {border: solid 1px red; padding: .3em;}
+		#Settings_error_message {border: solid 1px red; padding: .3em;}
+		#shift_btn {width:100%}
+		#input-table td:nth-child(2) {width:12em;}
+		#input-table td:nth-child(1) {width:5em; font-weight: bold;}
+		#cipher-table td {text-align:center; }
+		#character-table {width:330px;}
+		#settings_table {width:330px;}
+		#settings_table td {padding-bottom:20px; vertical-align:top;}
+		#character-table td {margin:0px; padding:0px;}
+		/* #input_key {-webkit-text-security: circle;} */
+		/* #input_string, #scratchpaper {-webkit-text-security: none;} */
+		/* set button margin and padding at line 1511 and at line 4091 ui-mini in css file. nope. overriding it below */
+		.my-ui-btn {
+			margin: .3em 0px; 
+			padding: .5em .7em;
+			border-radius: 5px;
+		}
+		.my-ui-mini {margin: 0em;}
+		/* set text input width and padding by setting width of td above */
+		
+		.header {
+			background-color: grey;
+			color: white;
+			font-weight: bold;
+		}
+		.main_body{
+			background-color: rgba(153,204,255,1.0);
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
+
+ </HEAD>
+
+ <BODY onLoad="setup()">
+	 <div id="pwapp" data-role="page"  data-theme="a">
+		 <div id="pwapp_header" data-role="header" data-theme="a" class="header" >
+		   <a href="#settings_page" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-gear ui-btn-icon-notext" data-transition="slide" data-direction="reverse" ></a>
+		   <h1>Password Cipher</h1>
+		   <a href="#help_page"     class="ui-btn ui-shadow ui-corner-all ui-btn-icon-right ui-icon-info ui-btn-icon-notext" data-transition="slide"></a>
+		 </div>
+		 
+		<div data-role="main" class="ui-content main_body">
+
+		<table id="input-table">
+		  <tr>
+			<td>String</td>
+			<td><INPUT TYPE="text" tabindex="1" NAME="input_string" ID="input_string" maxlength="25" onkeyup="setTimer()" placeholder="Enter letters and digits" ></td>
+			<td><span ID="ToggleStringCheckBox" name="ToggleStringCheckBox" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleNumbers(this)" title="Show or Hide String" >Hide</span></td>
+		  </tr>
+		  <tr>
+			<td>Key</td>
+			<td><INPUT TYPE="text" tabindex="2" NAME="input_key" ID="input_key" maxlength="25" onkeyup="setTimer()" placeholder="Enter letters and digits"></td>
+			<td><span ID="ToggleKeyCheckBox" name="ToggleKeyCheckBox" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleNumbers(this)" title="Show or Hide Key" >Hide</span></td>
+		  </tr>
+		  <tr>
+			<td>Length</td>
+			<td><INPUT TYPE="number" tabindex="3" NAME="input_length" ID="input_length" maxlength="2" placeholder="Enter 1-2 digits"></td>
+			<td></td>
+		  </tr>
+		  <tr>
+			<td></td>
+			<td>
+			<span ONCLICK="supercalc()" class="ui-btn my-ui-btn ui-btn-inline" data-inline="true" >Calculate</span>
+			<span ONCLICK="clearall()" class="ui-btn my-ui-btn ui-btn-inline" data-inline="true" >Clear</span>
+			</td>
+			<td></td>
+		  </tr>
+		  <tr>
+			<td></td>
+			<td>Time till clear-all: <span ID="TimerField" ></span></td>
+			<td></td>
+		  </tr>
+		  <tr>
+			<td >Scratchpad</td>
+			<td><INPUT TYPE="text" tabindex="5" NAME="scratchpaper" ID="scratchpaper" maxlength="25" onkeyup="setTimer()" ></td>
+			<td><span ID="ToggleScratchpaperCheckBox" name="ToggleScratchpaperCheckBox" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleNumbers(this)" title="Show or Hide Scratchpad" >Hide</span></td>
+		  </tr>
+		  </table>
+		  <div NAME="output_string" ID="output_string"></div>
+		 </div>
+	 </div>
+	 <div id="settings_page" data-role="page"  data-theme="a">
+		 <div data-role="header" data-theme="a" class="header">
+		   <h1>Password Cipher</h1>
+		   <a href="#pwapp" class="ui-btn my-ui-btn ui-btn-right ui-mini my-ui-mini" data-transition="slide"  >Back</a>
+		 </div>
+		 <div data-role="main" class="ui-content main_body">
+		 <div NAME="settings_string" ID="settings_string"></div>
+		 </div>
+	 </div>
+	 <div id="help_page" data-role="page"  data-theme="a">
+		 <div data-role="header" data-theme="a" class="header">
+		   <h1>Password Cipher</h1>
+		   <a href="#" class="ui-btn my-ui-btn ui-btn-right ui-mini my-ui-mini" data-rel="back" >Back</a>
+		 </div>
+		  <div id="help_div" data-role="main" class="ui-content main_body">
+
+			<div data-role="collapsibleset">
+			  <div data-role="collapsible">
+				<h1>Instructions</h1>
+				<p>Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.</p>
+				<video width="300"  controls>
+				  <source src="PWCipherDemo.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+				</video>
+				<p>To create a password start by entering the name of the web site or app in the String field. Then enter common word or string into the Key field. You use the same key for all web sites and apps. Next enter the length you want the password to be into the Length field. When you click the Calculate button the bottom of the page will be filled wiith the Cipher output.</p>
+				<p>You can use the buttons in the Cipher Output and Standard Characters section to create a password in the Scratchpad text field. Each time you click on a button it will add that character to the Scratchpad field. Use the Shift button to get capital letters. Click on the buttons using a pattern that you keep constant. In this way you will build up a password that is unique to each web site and that is an relatively random series of letters and numbers. More ideas for patterns are in the Tips and Tricks section.</p>
+				<p>Copy the password out of the Scratchpad field and use it wherever you need it. On many smartphones you can copy the field by pressing and holding on it.</p>
+				<p>The input section of the page has a number of Hide/Show buttons. You can use these buttons to show or hide the field that each is next to. This can help you hide your information from people that might be looking over your shoulder. The page also has a Clear button that you can use to clear all the data out of all the fields. In case you forget to use the Clear button, there is a countdown timer that will automatically clear all the fields 2 minutes after you are finished using the page. If you want to restart the time to give yourself more time just click the Calculate or Shift buttons.</p>
+			  </div>
+			  <div data-role="collapsible">
+				<h1>Tips and Tricks</h1>
+				<p>Key to successful use of Password Cipher is having a good patterns from the Cipher Output. There is a lot of variety in the patterns you can use in the Cipher Output to create good passwords. First of all, you should try to include upper and lower case letters, numbers, and special characters. You can get special characters by clicking on the buttons in the Standard Characters section. Here are a few ideas you can use.</p>
+				  <ul>
+					<li>Alternate letters and numbers.
+					<li>Use two from the number column and then two from the letter column (and then repeat).
+					<li>Use one letter and then two numbers and then three letters and then four numbers and so on.
+					<li>Go backwards up the Cipher Output table rather than from the top down.
+					<li>Capitalize every other letter or all vowels or all letters that follow other letters or letters that are in your name.
+					<li>Capitalize all letters except ones that met certain criteria.
+					<li>Always make the 3rd and 5th characters be ones that aren't in the cipher output at all. 
+					<li>Make one of the characters always be a special character.
+					<li>"Shift" the first or third number and make it be the special character that is usually above it on the keyboard (i.e. a 4 becomes a $).
+					<li>Have the password be 8 characters long if it is a .com and 10 characters long if it is a .org. Or make the length dependent on it being a financial site or a social media site.
+				  </ul>
+			  </div>
+			  <div data-role="collapsible">
+				<h1>How the Password Cipher works</h1>
+				<h2>How the Password Cipher works</h2>
+				<p>The Password Cipher works like a very primitive cipher. It is similar to what was used in World War One or what you may have used as a kid if you were kind of nerdish. Password Cipher just makes it easier for you.</p>
+				<p>Password Cipher takes the String you enter (i.e. 'abcde') and converts it to the numbers associated with each letters position in the alphabet. For example a=1 and b=2 and c=3 and so on. It then takes the key you provided (i.e. 'abcde'), converts them into numbers and adds them to the numbers from the letters to get new numbers (i.e. 1+1=2, 2+2=4, 3+3=6 and so on). The resulting list of numbers in this example would be '2,4,6,8,10'. These numbers are then converted back to letters (i.e. 2=b, 4=d, 6=f and so on). These resulting letters and numbers are output in the 'Outputs' columns of the Cipher Output section. In this example, the columns would be '2,4,6,8,10' and 'b,d,f,g,i'. If you want to see how PasswordCipher works you can go into the Settings page and choose to show the input values in the cipher output table.</p>
+				<p>Numbers are included at the end of the Password Cipher alphabet. For example z=26 and 1=27 and 0=36. There is no difference between upper case letters and lower case letters. Password Cipher does not allow for any special characters in the input string. If you request a password that is longer than the String you entered or the Key you entered then Password Cipher just repeats the String or Numbers. For example if you entered 'abc' and '1234' and requested a 6 character long password then Password Cipher would use the String 'abcabc' and the Numbers '12341234'. The Cypher Output would be '2,4,6,5,3,5' and 'b,d,f,e,c,e'.</p>
+				<h2>Risks of using Password Cipher</h2>
+				<p>The number one risk of using Password Cipher is that people looking over your shoulder could see either the passord you create or see the input Numbers and pattern that you use. The best way to reduce this risk is to make sure people aren't able to look at your screen or hands as you use the tool. The next best way is to use the checkboxes in Password Cipher to hide the data that you are entering.</p>
+				<p>The second risk of using Password Cipher is that someone might hack into several of the web sites that you use and look at the passwords that you created. In this case they might be able figure out what your Numbers and pattern are. While you can't stop people from hacking web sites, you can reduce the risk of them getting valuable information by having different Numbers and/or patterns for different classes of sites. For example, your financial web sites could use a different pattern or different Numbers than your non-financial sites. </p>
+			  </div>
+			</div>
+		  
+		  </div>
+
+	</div>
+	
+	 <div id="demo_page" data-role="page"  data-theme="a">
+		 <div data-role="header" data-theme="a" class="header">
+		   <h1>Password Cipher</h1>
+		   <a href="#pwapp" class="ui-btn my-ui-btn ui-btn-right ui-mini my-ui-mini" data-transition="slide"  >PW Cipher</a>
+		 </div>
+		 <div id="demo_div" data-role="main" class="ui-content main_body">
+		 <p>Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.</p>
+		 <p>For a strong password, experts recommend:</p>
+		  <ul>
+			<li>lower case letters
+			<li>upper case letters
+			<li>numbers
+			<li>special characters
+			<li>8+ characters
+			<li>no common words
+			<li>be unique
+		  </ul>
+		  <p>Experts think that "2v4x2L98g#" is a good password. </p>
+		  <p>We think remembering a unique password like this for each web site and app is impossible.</p>
+		  <p>With Password Cipher you only need to remember a common word and a simple pattern. Both are easy to remember.</p>
+		  <p>Password Cipher is available as an app on popular smartphones and tablets as well as a web-app at passwordcipher.com.</p>
+		 </div>
+	 </div>
+	 
+	<script type="text/javascript">
+		var Alphabet = 'abcdefghijklmnopqrstuvwxyz1234567890';
+		var AlphabetArray = [];
+		var index=0;
+		var timerLimit= 120000; //time to clear
+		var currentTime=0;
+		var letter;
+		var startTimeMS=0;
+		var AlphabetHash = [];
+		var NumberHash = [];
+		var timer;
+		var key_type = 'text';
+		var inputinoutput_default='Hide';
+		var alphadigitkey_default='Alpha';
+		var characterhighlight_default='Show';
+
+		function setup(){
+			AlphabetArray=Alphabet.match(/./g);
+			for (letter in  AlphabetArray)
+			{
+				index++;
+				if (letter==0 && index>1)
+				{
+					index=1;//catch IE8 bug!
+				}
+				AlphabetHash[AlphabetArray[letter]]=index;
+				NumberHash[index]=AlphabetArray[letter];
+				
+			}
+			//hardwire the hard to read ones
+			NumberHash[36]="0";
+			NumberHash[15]="o";
+			NumberHash[27]="1";
+			NumberHash[12]="L";
+			//test for html5 local storage capability
+			if(typeof(Storage) == "undefined" || location.hostname == '') {
+				// Sorry! No Web Storage support..  update settings_string with sorry text
+				document.getElementById("settings_string").innerHTML='<p id="Settings_error_message">Sorry, your browser or device does not support saved default settings.</p>';
+				//set/define temp variables. They are already set by the HTML page
+			}
+			else {
+				//allow user to set default settings by showing settings icon
+				//Does not work right. everything is too big when I do this... document.getElementById("pwapp_header").innerHTML='<a href="#settings_page" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-gear ui-btn-icon-notext" data-transition="slide" data-direction="reverse" ></a><h1>Password Cipher</h1><a href="#help_page" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-right ui-icon-info ui-btn-icon-notext" data-transition="slide"></a>';
+				//ideally I would only show the help button and then add the settings button when the client supports it.
+				
+				//check if local storage variables already exists, if they don't then create them. otherwise load them from storage
+				var string_default='';
+				if (localStorage.string_default) {
+					string_default=localStorage.string_default;
+				} else {
+					localStorage.string_default = 'Show';
+				}
+				var key_default='';
+				if (localStorage.key_default) {
+					key_default=localStorage.key_default;
+				} else {
+					localStorage.key_default = 'Show';
+				}
+				var scratchpad_default='';
+				if (localStorage.scratchpad_default) {
+					scratchpad_default=localStorage.scratchpad_default;
+				} else {
+					localStorage.scratchpad_default = 'Show';
+				}
+				inputinoutput_default='Hide'; // note that variable is declared globally above. I use this so that I don't have to check for localStorage anyplace besides Setup
+				if (localStorage.inputinoutput_default) {
+					inputinoutput_default=localStorage.inputinoutput_default;
+				} else {
+					localStorage.inputinoutput_default = 'Hide';
+				}
+				alphadigitkey_default='Alpha'; // note that variable is declared globally above. I use this so that I don't have to check for localStorage anyplace besides Setup
+				if (localStorage.alphadigitkey_default) {
+					alphadigitkey_default=localStorage.alphadigitkey_default;
+				} else {
+					localStorage.alphadigitkey_default = 'Alpha';
+				}
+				characterhighlight_default='Show'; // note that variable is declared globally above. I use this so that I don't have to check for localStorage anyplace besides Setup
+				if (localStorage.characterhighlight_default) {
+					characterhighlight_default=localStorage.characterhighlight_default;
+				} else {
+					localStorage.characterhighlight_default = 'Show';
+				}
+				
+				//write settings_string with controls
+				var my_settings_string='';
+				my_settings_string += '<p>Use these settings to control the default behavior of Password Cipher.</p>';
+				my_settings_string += '<table id="settings_table">';
+				my_settings_string += '<tr><td><span ID="ToggleStringDefault" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleDefaults(this)" title="Show or Hide String by default" >Show</span></td><td>String by default. Hide it to prevent people from looking over your shoulder.</td></tr>';
+				my_settings_string += '<tr><td><span ID="ToggleKeyDefault" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleDefaults(this)" title="Show or Hide Key by default" >Show</span></td><td>Key by default. Hide it to prevent people from looking over your shoulder.</td></tr>';
+				my_settings_string += '<tr><td><span ID="ToggleScratchpaperDefault" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleDefaults(this)" title="Show or Hide Scratchpad by default" >Show</span></td><td>Scratchpad by default. Hide it to prevent people from looking over your shoulder. You have to be showing the Scratchpad in order to copy the characters to the clipboard or another app.</td></tr>';
+				my_settings_string += '<tr><td><span ID="CharacterHighlightDefault" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleDefaults(this)" title="Show or Hide Character Highlighting by default" >Show</span></td><td>Character highlighting by default. Hide it to prevent people from looking over your shoulder.</td></tr>';
+				my_settings_string += '<tr><td><span ID="ToggleInputInOutputDefault" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleDefaults(this)" title="Show or Hide inputs in the output by default" >Hide</span></td><td>Inputs in the output by default. Show the inputs to see how Password Cipher works or to have extra characters to add variety to your passwords.</td></tr>';
+				my_settings_string += '<tr><td><span ID="AlphaDigitsKeyDefault" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleDefaults(this)" title="Use alphanumeric or digits in the Key by default" >Alpha</span></td><td>Alphanumeric characters (letters and digits) or just digits can be used in the Key by default. Using alphanumeric keys is best. Digit-only keys are provide for legacy users and makes it easier for them. </td></tr>';
+				my_settings_string += '</table>';
+				document.getElementById('settings_string').innerHTML = my_settings_string;
+				
+				//set UI on pwapp page
+				if(string_default=='Hide'){
+					 document.getElementById('input_string').type="password";
+					 document.getElementById('ToggleStringCheckBox').innerHTML='Show';
+					 document.getElementById('ToggleStringDefault').innerHTML='Hide';
+				}
+				if(key_default=='Hide'){
+					 document.getElementById('input_key').type="password";
+					 document.getElementById('ToggleKeyCheckBox').innerHTML='Show';
+					 document.getElementById('ToggleKeyDefault').innerHTML='Hide';
+				}
+				if(scratchpad_default=='Hide'){
+					 document.getElementById('scratchpaper').type="password";
+					 document.getElementById('ToggleScratchpaperCheckBox').innerHTML='Show';
+					 document.getElementById('ToggleScratchpaperDefault').innerHTML='Hide';
+				}
+				if(inputinoutput_default=='Show'){
+					 document.getElementById('ToggleInputInOutputDefault').innerHTML='Show';
+				}
+				if(characterhighlight_default=='Hide'){
+					 document.getElementById('CharacterHighlightDefault').innerHTML='Hide';
+				}
+				if(alphadigitkey_default=='Digits'){
+					document.getElementById('AlphaDigitsKeyDefault').innerHTML='Digits';
+					document.getElementById('input_key').type="number";
+					document.getElementById('input_key').placeholder="Enter digits";
+				}
+			}
+
+			clearall(); //clear all fields on refresh
+		}
+		function toggleDefaults(defObj){
+			var defvalue=defObj.innerHTML;
+			var defname=defObj.id;
+			if(defvalue == 'Show'){
+				defObj.innerHTML='Hide';
+				switch(defname){
+					case 'ToggleStringDefault':
+						document.getElementById('input_string').type="password";
+						document.getElementById('ToggleStringCheckBox').innerHTML='Show';
+						localStorage.string_default = 'Hide';
+						break;
+					case 'ToggleKeyDefault':
+						document.getElementById('input_key').type="password";
+						document.getElementById('ToggleKeyCheckBox').innerHTML='Show';
+						localStorage.key_default = 'Hide';
+						break;
+					case 'ToggleScratchpaperDefault':
+						document.getElementById('scratchpaper').type="password";
+						document.getElementById('ToggleScratchpaperCheckBox').innerHTML='Show';
+						localStorage.scratchpad_default = 'Hide';
+						break;
+					case 'ToggleInputInOutputDefault':
+						localStorage.inputinoutput_default = 'Hide';
+						inputinoutput_default = 'Hide';
+						break;
+					case 'CharacterHighlightDefault':
+						localStorage.characterhighlight_default = 'Hide';
+						characterhighlight_default = 'Hide';
+						break;
+					default: 
+						alert('Error201');
+				}
+			}
+			else if(defvalue == 'Hide'){
+				defObj.innerHTML='Show';
+				switch(defname){
+					case 'ToggleStringDefault':
+						document.getElementById('input_string').type="text";
+						document.getElementById('ToggleStringCheckBox').innerHTML='Hide';
+						localStorage.string_default = 'Show';
+						break;
+					case 'ToggleKeyDefault':
+						if(alphadigitkey_default=='Digits'){
+							document.getElementById('input_key').type="number";
+							document.getElementById('input_key').placeholder="Enter digits";
+						}
+						else{
+							document.getElementById('input_key').type="text";
+							document.getElementById('input_key').placeholder="Enter letters and digits";
+						}
+						document.getElementById('ToggleKeyCheckBox').innerHTML='Hide';
+						localStorage.key_default = 'Show';
+						break;
+					case 'ToggleScratchpaperDefault':
+						document.getElementById('scratchpaper').type="text";
+						document.getElementById('ToggleScratchpaperCheckBox').innerHTML='Hide';
+						localStorage.scratchpad_default = 'Show';
+						break;
+					case 'ToggleInputInOutputDefault':
+						localStorage.inputinoutput_default = 'Show';
+						inputinoutput_default = 'Show';
+						break;
+					case 'CharacterHighlightDefault':
+						localStorage.characterhighlight_default = 'Show';
+						characterhighlight_default = 'Show';
+						break;
+					default: 
+						alert('Error201');
+				}			
+			}
+			else if(defvalue == 'Alpha'){
+				document.getElementById('AlphaDigitsKeyDefault').innerHTML='Digits';
+				localStorage.alphadigitkey_default = 'Digits';
+				alphadigitkey_default = 'Digits';
+				if (document.getElementById('ToggleKeyCheckBox').innerHTML == 'Hide'){
+							document.getElementById('input_key').type="number";
+							document.getElementById('input_key').placeholder="Enter digits";
+				}
+			}
+			else if(defvalue == 'Digits'){
+				document.getElementById('AlphaDigitsKeyDefault').innerHTML='Alpha';
+				localStorage.alphadigitkey_default = 'Alpha';
+				alphadigitkey_default = 'Alpha';
+				if (document.getElementById('ToggleKeyCheckBox').innerHTML == 'Hide'){
+							document.getElementById('input_key').type="text";
+							document.getElementById('input_key').placeholder="Enter letters and digits";
+				}
+			}
+			else{
+				alert('Error301');				
+			}
+
+		}
+		function supercalc(){
+			var output_table='';
+			
+			if(inputinoutput_default=='Show'){
+				output_table=output_table+'<table id="cipher-table" class="inputs_in_output">';
+				output_table=output_table+'<tr><th colspan="7">Your Cipher Output</th></tr>';
+				output_table=output_table+'<tr><td colspan="7" ><input type="button" id="shift_btn" value="shift" onclick="toggleCase(this)" class="ui-btn my-ui-btn ui-corner-all ui-mini my-ui-mini"  ></td></tr>';
+				output_table=output_table+'<tr><td colspan="4"  class="cen_unl" >Inputs</td><td colspan="1"></td><td colspan="2" class="cen_unl" >Outputs</td></tr>';
+				output_table=output_table+'<tr><td colspan="2"  class="cen_unl_light" >String</td><td colspan="2"  class="cen_unl_light" >Key</td><td colspan="1"></td><td colspan="2" ></td></tr>';
+			}
+			else{
+				output_table=output_table+'<table id="cipher-table" class="no_inputs_in_output">';
+				output_table=output_table+'<tr><th colspan="2">Your Cipher Output</th></tr>';
+				output_table=output_table+'<tr><td colspan="2" ><input type="button" id="shift_btn" value="shift" onclick="toggleCase(this)" class="ui-btn my-ui-btn ui-corner-all ui-mini my-ui-mini"  ></td></tr>';
+			}
+			var ins=document.getElementById("input_string").value;
+			ins=ins.replace(/\W/g, '');
+			ins=ins.toLowerCase();
+			if(ins.toString().length==0){
+				//document.getElementById("input_string").classList.add("redbox");
+				//$( "#input_string" ).textinput( "option", "theme", "b" );
+				//$( "#input_string" ).textinput({wrapperClass: "redbox"});
+				document.getElementById("output_string").innerHTML='<p id="error_message">You must have valid data in the String, Key, and Length fields for Password Cipher to work.</p>';
+				return;
+			}
+			while(ins.toString().length <50){
+				ins=ins+ins;
+			}
+			
+			//var ink=parseInt(document.getElementById("input_key").value,10);
+			var ink=document.getElementById("input_key").value;
+			ink=ink.replace(/\W/g, '');
+			ink=ink.toLowerCase();
+			if(ink.toString().length==0){
+				document.getElementById("output_string").innerHTML='<p id="error_message">You must have valid data in the String, Key, and Length fields for Password Cipher to work.</p>';
+				return;
+			}
+			while(ink.toString().length <50){
+				ink=ink+ink;
+			}
+			var inle=document.getElementById("input_length").value;
+			inle=inle.replace(/\D/g, '');
+			inle=inle.substring(0,2);
+			if(inle.toString().length==0){
+				document.getElementById("output_string").innerHTML='<p id="error_message">You must have valid data in the String, Key, and Length fields for Password Cipher to work.</p>';
+				return;
+			}
+			if(inle>30){
+				inle=30;
+			}
+			var InputStringArray = [];
+			var InputKeyArray= [];
+			InputStringArray=ins.match(/./g);
+			InputKeyArray=ink.match(/./g);
+			var keychecked=document.getElementById("ToggleKeyCheckBox");
+			
+			for (letter=0;letter<inle ;letter++ )
+			{
+				output_table=output_table+'<tr>';
+				letter_value2=InputStringArray[letter];
+				key_value=InputKeyArray[letter];
+				
+				//Output character from input string!
+				if(document.getElementById("ToggleStringCheckBox").innerHTML == 'Hide'){
+					if(inputinoutput_default=='Show'){
+						output_table=output_table+'<td ><span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar">'+letter_value2+'</span></td>'; //used letter_value2 because letter_value is already used as a form field name.
+					}
+					number_output=AlphabetHash[letter_value2];
+					number_output_string='';
+					for (var i = 0; i < number_output.toString().length; i++) {
+						number_output_string=number_output_string+'<span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+number_output.toString().charAt(i)+'</span>'; 
+					}
+					if(inputinoutput_default=='Show'){
+						output_table=output_table+'<td >'+number_output_string+'</td>';
+					}
+				}
+				else{
+					if(inputinoutput_default=='Show'){
+						output_table=output_table+'<td><span class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+'-'+'</span></td>';
+						output_table=output_table+'<td><span class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+'#'+'</span></td>';
+					}
+				}
+				
+				// Output the digits of the input key
+				my_regex=/\D/;
+				if(my_regex.test(ink)){
+					//ink has letters in it so use new system (split into individual digits and show each as a button)
+					key_value_digits=AlphabetHash[key_value];
+					number_output_string='';
+					for (var i = 0; i < key_value_digits.toString().length; i++) {
+						number_output_string=number_output_string+'<span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+key_value_digits.toString().charAt(i)+'</span>'; 
+					}
+					temp_output_table='<td >'+number_output_string+'</td>';	
+					new_number=AlphabetHash[letter_value2]+key_value_digits; //create new number to be used below
+				}
+				else{
+					//key_value is all digits so use old system
+					temp_output_table='<td><span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar ">'+key_value+'</span></td>';
+					new_number=AlphabetHash[letter_value2]+parseInt(key_value,10); // create new number for use below
+				}
+				if(inputinoutput_default=='Show'){
+					if(keychecked.innerHTML == 'Hide'){
+						output_table=output_table+='<td><span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar ">'+key_value+'</span></td>'; // the key
+						output_table=output_table+temp_output_table; // the key numerical equivelent
+					}
+					else{
+						output_table=output_table+'<td><span class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+'#'+'</span></td>'; //key
+						output_table=output_table+'<td><span class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+'#'+'</span></td>'; //key numeric equivelent
+					}
+				}
+				
+				// output => column
+				if(inputinoutput_default=='Show'){
+					output_table=output_table+'<td>'+' => '+'</td>';
+				}
+				
+				//////////////////////////////////////////////////////// output columns after this line
+
+				// output new number
+				number_output=new_number;
+				number_output_string='';
+				for (var i = 0; i < number_output.toString().length; i++) {
+					number_output_string=number_output_string+'<span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+number_output.toString().charAt(i)+'</span>'; 
+				}
+				if(inputinoutput_default=='Show'){
+					output_table=output_table+'<td >'+number_output_string+'</td>';		
+				}
+				else{
+					output_table=output_table+'<td class="width50">'+number_output_string+'</td>';						
+				}
+
+				// output new letter
+				if (new_number > 36)
+				{
+					new_number = new_number % 36;
+				}
+				new_letter=NumberHash[new_number];
+				if(inputinoutput_default=='Show'){
+					output_table=output_table+'<td>';
+				}
+				else{
+					output_table=output_table+'<td class="width50">';
+				}
+				output_table=output_table+'<span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar">'+new_letter+'</span></td>';
+				output_table=output_table+'</tr>';
+			}
+
+			output_table=output_table+'</table>';
+
+			//output table of numbers, special characters, and regular characters
+			output_table=output_table+'<table id="character-table" ><tr><th colspan="10">Standard Characters</th></tr>';
+			output_table=output_table+'<tr>';
+			quick_string='!@#$%^ *()';
+			for (var i = 0; i < quick_string.length; i++) {
+				output_table=output_table+'<td><span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+quick_string.charAt(i)+'</span></td>'; 
+			}
+			output_table=output_table+'</tr>';
+
+			output_table=output_table+'<tr>';
+			quick_string='1234567890';
+			for (var i = 0; i < quick_string.length; i++) {
+				output_table=output_table+'<td><span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+quick_string.charAt(i)+'</span></td>'; 
+			}
+			output_table=output_table+'</tr>';
+
+			output_table=output_table+'<tr>';
+			quick_string='abcdefghij';
+			for (var i = 0; i < quick_string.length; i++) {
+				output_table=output_table+'<td><span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+quick_string.charAt(i)+'</span></td>'; 
+			}
+			output_table=output_table+'</tr>';
+			output_table=output_table+'<tr>';
+			quick_string='klmnopqrst';
+			for (var i = 0; i < quick_string.length; i++) {
+				output_table=output_table+'<td><span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+quick_string.charAt(i)+'</span></td>'; 
+			}
+			output_table=output_table+'</tr>';
+			output_table=output_table+'<tr>';
+			quick_string='uvwxyz    ';
+			for (var i = 0; i < quick_string.length; i++) {
+				output_table=output_table+'<td><span onclick="addToString(this)" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini mychar" >'+quick_string.charAt(i)+'</span></td>'; 
+			}
+			output_table=output_table+'</tr>';
+			output_table=output_table+'</table>';
+
+			document.getElementById("output_string").innerHTML=output_table;
+			setTimer();
+		}
+		function addToString(elem){
+			orig=document.getElementById("scratchpaper").value;
+			added=elem.innerHTML;
+			added=added.toLowerCase();
+			if (document.getElementById("shift_btn").value != 'shift')
+			{
+				added=added.toUpperCase();
+			}
+			document.getElementById("scratchpaper").value=orig+added;
+			toggleCase(elem);
+			//elem.className = elem.className + " grayback"; // not getting added
+			if(characterhighlight_default == 'Show'){
+				elem.style["background-color"] = "lightgrey";
+			}
+			setTimer();
+		}
+		function toggleCase(elem){
+			shift_btn_value=document.getElementById("shift_btn").value;
+			//document.getElementById("scratchpaper").value=shift_btn_value;
+			if (elem.id=='shift_btn')
+			{
+				if (shift_btn_value == 'shift')
+				{
+					document.getElementById("shift_btn").value='SHIFT';
+					$(".mychar").css("text-transform","uppercase");
+				}
+				else if (shift_btn_value == 'SHIFT')
+				{
+					document.getElementById("shift_btn").value='SHIFT-LOCK';
+					$(".mychar").css("text-transform","uppercase");
+				}
+				else if (shift_btn_value == 'SHIFT-LOCK')
+				{
+					document.getElementById("shift_btn").value='shift';
+					$(".mychar").css("text-transform","lowercase");
+				}
+			}
+			else{
+				if (shift_btn_value == 'SHIFT')
+				{
+					document.getElementById("shift_btn").value='shift';
+					$(".mychar").css("text-transform","lowercase");
+				}
+			}
+			setTimer();
+		}
+		function setTimer(){
+			clearTimeout(timer);
+			startTimeMS = (new Date()).getTime();
+			timer=setTimeout("clearall()",timerLimit);
+		}
+		function displayTimer(){
+			currentTime=(new Date()).getTime();
+			var TimeRemaining=Math.floor((timerLimit-(currentTime-startTimeMS))/1000);
+			if (TimeRemaining<0)
+			{
+				TimeRemaining=0;
+			}
+			var TimerField = document.getElementById("TimerField");
+			TimerField.innerHTML=TimeRemaining;
+		}
+		function clearall(){
+			document.getElementById("output_string").innerHTML='';
+			//document.getElementById("output_number").innerHTML='';
+			//document.getElementById("output_letter").innerHTML='';
+			//document.getElementById("letter_value").innerHTML='';
+			//document.getElementById("input_letter").value='';
+			//document.getElementById("input_number").value='';
+			document.getElementById("input_string").value='';
+			document.getElementById("input_key").value='';
+			document.getElementById("input_length").value='';
+			document.getElementById("scratchpaper").value='';
+			startTimeMS=0;
+		}
+		function toggleNumbers(myobj){
+			if(navigator.appName != "Microsoft Internet Explorer"){
+				var mycheck=myobj.innerHTML;
+				var myname=myobj.id;
+				//alert('name '+myname);
+				var mytextfield='';
+				switch(myname){
+					case 'ToggleKeyCheckBox':
+						mytextfield='input_key';
+						break;
+					case 'ToggleStringCheckBox':
+						mytextfield='input_string';
+						break;
+					case 'ToggleScratchpaperCheckBox':
+						mytextfield='scratchpaper';
+						break;
+					default: 
+						alert('Error');
+				}
+				var textfield=document.getElementById(mytextfield);  
+				//var textfield=document.getElementById('input_key');
+				if( mycheck == 'Show' ){  
+					//myobj.checked  and mycheck == true both work on FF but IE only works on unchecking
+					//mycheck == 'true' works on IE but always goes to B
+					if(mytextfield=='input_key'){
+						if(alphadigitkey_default=='Digits'){
+							textfield.type ="number";
+						}
+						else{
+							textfield.type ="text";
+						}
+						 //this used to be number when I only allowed numbers. would be nice if there was a retro mode that only used numbers. that way the number keyboard would show up for those users.
+					}
+					else{
+						textfield.type="text";					
+					}
+					//$("#"+mytextfield).css("-webkit-text-security",""); // webkit flaky. not implemented well on many browsers
+					myobj.innerHTML='Hide';
+				}
+				else{
+					textfield.type="password";
+					//$("#"+mytextfield).css("-webkit-text-security","circle");
+					myobj.innerHTML='Show';
+				}
+			}
+			else{
+				//IE Trick URL
+				//http://www.universalwebservices.net/web-programming-resources/javascript/change-input-element-type-using-javascript
+				alert('Checkboxes do not work with Internet Explorer. Try Firefox, Chrome, or Safari web browsers.');
+			}
+		}
+
+		setInterval("displayTimer()",1000);
+	</script> 
+
+	 </BODY>
+</HTML>
