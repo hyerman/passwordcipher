@@ -248,8 +248,8 @@
 			NumberHash[15]="o";
 			NumberHash[27]="1";
 			NumberHash[12]="L";
-			//test for html5 local storage capability
-			if(typeof(Storage) == "undefined" || location.hostname == '') {
+			//test for html5 local storage capability  || location.hostname == ''
+			if(typeof(Storage) == "undefined" ) {
 				// Sorry! No Web Storage support..  update settings_string with sorry text
 				document.getElementById("settings_string").innerHTML='<p id="Settings_error_message">Sorry, your browser or device does not support saved default settings.</p>';
 				//set/define temp variables. They are already set by the HTML page
