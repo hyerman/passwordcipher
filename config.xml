@@ -6,7 +6,7 @@
         id        = "com.passwordcipher.app"
         version   = "1.0.0">
 
-    <name>PW Cipher</name>
+    <name>Password Cipher</name>
 
     <description>
         Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.
@@ -94,7 +94,7 @@
 	<icon src="res/icon/webos/icon-64.png"          gap:platform="webos" />
 	-->
 	<icon src="icons/android-icon-48x48.png"  gap:platform="winphone" />
-    <icon src="icons/ms-icon-150x150.png" gap:platform="winphone"   gap:role="background" />
+    <icon src="icons/appicon-152x152.png" gap:platform="winphone"   gap:role="background" />
 
     <!-- Define app splash screen for each platform. -->
 	<!--
