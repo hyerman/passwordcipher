@@ -6,7 +6,7 @@
         id        = "com.passwordcipher.app"
         version   = "1.0.0">
 
-    <name>Password Cipher</name>
+    <name>PW Cipher</name>
 
     <description>
         Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.
