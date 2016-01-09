@@ -358,7 +358,7 @@
 			NumberHash[27]="1";
 			NumberHash[12]="L";
 			//test for html5 local storage capability
-			if(typeof(Storage) == "undefined" || location.hostname == '') {
+			if(typeof(Storage) == "undefined" ) {
 				// Sorry! No Web Storage support..  update settings_string with sorry text
 				document.getElementById("settings_string").innerHTML='<p id="Settings_error_message">Sorry, your browser or device does not support saved default settings.</p>';
 				//set/define temp variables. They are already set by the HTML page
@@ -882,7 +882,7 @@
 		});
 		
 		//alert(screen.availWidth);
-		$.event.special.swipe.horizontalDistanceThreshold = 0.15*screen.availWidth; // (default: 30) (pixels) – Swipe horizontal displacement must be less than this.
+		$.event.special.swipe.horizontalDistanceThreshold = 30; // 0.15*screen.availWidth (default: ) (pixels) – Swipe horizontal displacement must be less than this.
 		
 		setInterval("displayTimer()",1000);
 	</script> 
