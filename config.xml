@@ -4,12 +4,12 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "com.passwordcipher.app"
-        version   = "1.0.0">
+        version   = "1.0.1">
 
     <name>PW Cipher</name>
 
     <description>
-        Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.
+        Password Cipher is a free tool that makes strong passwords easy to remember and re-create.
     </description>
 
     <author href="http://passwordcipher.com" email="hyer_bercaw@hotmail.com">

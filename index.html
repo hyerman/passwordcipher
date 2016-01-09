@@ -1,218 +1,327 @@
 <!DOCTYPE html>
 <HTML>
- <HEAD>
-  <TITLE> Password Cipher </TITLE>
-
+<HEAD>
+	<TITLE> Password Cipher </TITLE>
+	<link rel="icon" type="image/png" href="favicon-32x32.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="jquery.mobile-1.4.5.min.css">
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
 	<style>
-		@viewport {
-			width: 100%;
-		}
-		table {width:360px;}
-		.inputs_in_output {width:330px;}
-		.no_inputs_in_output {width:200px;margin: 0 auto;}
-		.width50 {width:50%;}
-		#pwapp {
-			width:360px;
-			margin: auto;
-		} 
-		#settings_page {
-			width:360px;
-			margin: auto;
-		} 
-		#demo_page {
-			width:360px;
-			margin: auto;
-			font-weight: bold;
-		} 
-		#help_page {
-			width:360px; 
-			font-size:small;
-			margin: auto;
-		}
-		#help_div{
-			min-height: 600px;
-		}
-		#demo_div{
-			min-height: 800px;
-		}
-		#output_string {
-			min-height: 400px;
-			background-color: rgba(153,204,255,1.0);
-		}
-		.cen_unl {text-align: center; border-bottom-width: 1px; border-bottom: solid;}
-		.cen_unl_light {text-align: center; border-bottom-width: 1px; border-bottom: solid; border-bottom-color: darkgray;}
-		.mychar {text-transform: lowercase;} /* for uc and lc of results */
-		.grayback {background-color: green;}
-		#error_message {border: solid 1px red; padding: .3em;}
-		#Settings_error_message {border: solid 1px red; padding: .3em;}
-		#shift_btn {width:100%}
-		#input-table td:nth-child(2) {width:12em;}
-		#input-table td:nth-child(1) {width:5em; font-weight: bold;}
-		#cipher-table td {text-align:center; }
-		#character-table {width:330px;}
-		#settings_table {width:330px;}
-		#settings_table td {padding-bottom:20px; vertical-align:top;}
-		#character-table td {margin:0px; padding:0px;}
-		/* #input_key {-webkit-text-security: circle;} */
-		/* #input_string, #scratchpaper {-webkit-text-security: none;} */
-		/* set button margin and padding at line 1511 and at line 4091 ui-mini in css file. nope. overriding it below */
-		.my-ui-btn {
-			margin: .3em 0px; 
-			padding: .5em .7em;
-			border-radius: 5px;
-		}
-		.my-ui-mini {margin: 0em;}
-		/* set text input width and padding by setting width of td above */
+		/* Overall and descending */
+			@viewport {
+				width: 100%;
+			}
 		
-		.header {
-			background-color: grey;
-			color: white;
-			font-weight: bold;
+		/* Shared among pages */
+			.header {
+				background-color: grey;
+				color: white;
+				font-weight: bold;
+				font-size: .9em;
+			}
+			.main_body{
+				background-color: rgba(153,204,255,1.0);
+			}
+			.outerdiv{
+				width: 100%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			
+		/* Page specific (but somewhat common)  */
+			#pwapp {
+				margin: auto;
+			} 
+			#settings_page {
+				margin: auto;
+			} 
+			#help_page {
+				margin: auto;
+			}
+			#demo_page {
+				margin: auto;
+				font-weight: bold;
+			} 
+			#help_div{
+				min-height: 600px;
+				font-size:small;
+			}
+			#demo_div{
+				min-height: 800px;
+			}
+			
+		/* Button CSS  */
+			.my-ui-btn {
+				margin: .5em auto; 
+				padding: .4em .4em;
+				border-radius: 5px;
+			}
+			.my-ui-mini {
+				margin: .1em;
+				padding: .4em .4em;
+			}
+
+		/* pwapp page css  */
+			#output_string {
+				min-height: 1200px;
+				background-color: rgba(153,204,255,1.0);
+			}
+			.inputs_in_output {
+				width: 100%;
+			}
+			.no_inputs_in_output {
+				width:40%;
+				margin: 0 auto;
+			}
+			.width50 {
+				width:50%;
+			}
+			#TimerField, #TimerText{
+				font-weight: bold;
+			}
+			.cen_unl {
+				text-align: 
+				center; 
+				border-bottom-width: 1px; 
+				border-bottom: solid;
+			}
+			.cen_unl_light {
+				text-align: center; 
+				border-bottom-width: 1px; 
+				border-bottom: solid; 
+				border-bottom-color: darkgray;
+			}
+			.mychar {
+				text-transform: lowercase;  /* for uc and lc of results */
+			}
+			#error_message {
+				border: solid 1px red; 
+				padding: .3em;
+			}
+			#Settings_error_message {
+				border: solid 1px red; 
+				padding: .3em;
+			}
+			#shift_btn {
+				width:100%
+			}
+			#input-table{
+				width: 100%;
+			}
+			#input-table td:nth-child(1){
+				font-weight: bold;
+			}
+			#cipher-table td {
+				text-align:center; 
+			}
+			#character-table {
+				width: 100%;
+			}
+			#settings_table {
+				width:100%;
+			}
+			#settings_table td {
+				padding-bottom:20px; 
+				vertical-align:top;
+			}
+			#character-table td {
+				margin:0px; 
+				padding:.1em;
+				text-align: center;
+				vertical-align: middle;
+			}
+		@media only screen and (min-width: 400px) {
+			.outerdiv{
+				width: 100%;
+				font-size: large;
+			}
+			.my-ui-btn {
+				font-size: large;
+			}
+			.my-ui-mini {
+				font-size: large;
+			}	
+			#help_div{
+				font-size:medium;
+			}
+			.header {
+				font-size: large;
+			}
+			#TimerField, #TimerText, #input-table td:nth-child(1){
+				font-size:large;
+				font-weight: bold;
+			}
 		}
-		.main_body{
-			background-color: rgba(153,204,255,1.0);
+		@media only screen and (min-width: 700px) {
+			.outerdiv{
+				width: 100%;
+				font-size: x-large;
+			}
+			.my-ui-btn {
+				font-size: large;
+			}
+			.my-ui-mini {
+				font-size: large;
+			}	
+			#help_div{
+				font-size:medium;
+			}
+			.header {
+				font-size: large;
+			}
+			#TimerField, #TimerText, #input-table td:nth-child(1){
+				font-size:large;
+				font-weight: bold;
+			}
+		}
+		@media only screen and (min-width: 800px) {
+			.outerdiv{
+				width: 600px;
+			}
 		}
 	</style>
-	<script src="phonegap.js"></script>
-	<script src="jquery-2.1.4.min.js"></script>
-	<script src="jquery.mobile-1.4.5.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
 
- </HEAD>
+</HEAD>
 
- <BODY onLoad="setup()">
-	 <div id="pwapp" data-role="page"  data-theme="a">
-		 <div id="pwapp_header" data-role="header" data-theme="a" class="header" >
-		   <a href="#settings_page" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-gear ui-btn-icon-notext" data-transition="slide" data-direction="reverse" ></a>
-		   <h1>Password Cipher</h1>
-		   <a href="#help_page"     class="ui-btn ui-shadow ui-corner-all ui-btn-icon-right ui-icon-info ui-btn-icon-notext" data-transition="slide"></a>
-		 </div>
-		 
-		<div data-role="main" class="ui-content main_body">
+<BODY onLoad="setup()">
+	<div id="pwapp" data-role="page"  data-theme="a">
+		<div class="outerdiv">
+			 <div id="pwapp_header" data-role="header" data-theme="a" class="header" >
+			   <a href="#settings_page" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-gear ui-btn-icon-notext" data-transition="slide" data-direction="reverse" ></a>
+			   <h1>Password Cipher</h1>
+			   <a href="#help_page"     class="ui-btn ui-shadow ui-corner-all ui-btn-icon-right ui-icon-info ui-btn-icon-notext" data-transition="slide"></a>
+			 </div>
+			 
+			<div data-role="main" class="ui-content main_body">
 
-		<table id="input-table">
-		  <tr>
-			<td>String</td>
-			<td><INPUT TYPE="text" tabindex="1" NAME="input_string" ID="input_string" maxlength="25" onkeyup="setTimer()" placeholder="Enter letters and digits" ></td>
-			<td><span ID="ToggleStringCheckBox" name="ToggleStringCheckBox" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleNumbers(this)" title="Show or Hide String" >Hide</span></td>
-		  </tr>
-		  <tr>
-			<td>Key</td>
-			<td><INPUT TYPE="text" tabindex="2" NAME="input_key" ID="input_key" maxlength="25" onkeyup="setTimer()" placeholder="Enter letters and digits"></td>
-			<td><span ID="ToggleKeyCheckBox" name="ToggleKeyCheckBox" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleNumbers(this)" title="Show or Hide Key" >Hide</span></td>
-		  </tr>
-		  <tr>
-			<td>Length</td>
-			<td><INPUT TYPE="number" tabindex="3" NAME="input_length" ID="input_length" maxlength="2" placeholder="Enter 1-2 digits"></td>
-			<td></td>
-		  </tr>
-		  <tr>
-			<td></td>
-			<td>
-			<span ONCLICK="supercalc()" class="ui-btn my-ui-btn ui-btn-inline" data-inline="true" >Calculate</span>
-			<span ONCLICK="clearall()" class="ui-btn my-ui-btn ui-btn-inline" data-inline="true" >Clear</span>
-			</td>
-			<td></td>
-		  </tr>
-		  <tr>
-			<td></td>
-			<td>Time till clear-all: <span ID="TimerField" ></span></td>
-			<td></td>
-		  </tr>
-		  <tr>
-			<td >Scratchpad</td>
-			<td><INPUT TYPE="text" tabindex="5" NAME="scratchpaper" ID="scratchpaper" maxlength="25" onkeyup="setTimer()" ></td>
-			<td><span ID="ToggleScratchpaperCheckBox" name="ToggleScratchpaperCheckBox" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleNumbers(this)" title="Show or Hide Scratchpad" >Hide</span></td>
-		  </tr>
-		  </table>
-		  <div NAME="output_string" ID="output_string"></div>
-		 </div>
-	 </div>
-	 <div id="settings_page" data-role="page"  data-theme="a">
-		 <div data-role="header" data-theme="a" class="header">
-		   <h1>Password Cipher</h1>
-		   <a href="#pwapp" class="ui-btn my-ui-btn ui-btn-right ui-mini my-ui-mini" data-transition="slide"  >Back</a>
-		 </div>
-		 <div data-role="main" class="ui-content main_body">
-		 <div NAME="settings_string" ID="settings_string"></div>
-		 </div>
-	 </div>
-	 <div id="help_page" data-role="page"  data-theme="a">
-		 <div data-role="header" data-theme="a" class="header">
-		   <h1>Password Cipher</h1>
-		   <a href="#" class="ui-btn my-ui-btn ui-btn-right ui-mini my-ui-mini" data-rel="back" >Back</a>
-		 </div>
-		  <div id="help_div" data-role="main" class="ui-content main_body">
+			<table id="input-table">
+			  <tr>
+				<td>String</td>
+				<td><INPUT TYPE="text" tabindex="1" NAME="input_string" ID="input_string" maxlength="25" onkeyup="setTimer()" placeholder="Enter letters and digits" ></td>
+				<td><span ID="ToggleStringCheckBox" name="ToggleStringCheckBox" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleNumbers(this)" title="Show or Hide String" >Hide</span></td>
+			  </tr>
+			  <tr>
+				<td>Key</td>
+				<td><INPUT TYPE="text" tabindex="2" NAME="input_key" ID="input_key" maxlength="25" onkeyup="setTimer()" placeholder="Enter letters and digits"></td>
+				<td><span ID="ToggleKeyCheckBox" name="ToggleKeyCheckBox" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleNumbers(this)" title="Show or Hide Key" >Hide</span></td>
+			  </tr>
+			  <tr>
+				<td>Length</td>
+				<td><INPUT TYPE="number" tabindex="3" NAME="input_length" ID="input_length" maxlength="2" placeholder="Enter 1-2 digits"></td>
+				<td></td>
+			  </tr>
+			  <tr>
+				<td></td>
+				<td colspan="2">
+				<span ONCLICK="supercalc()" class="ui-btn my-ui-btn ui-btn-inline" data-inline="true" >Calculate</span>
+				<span ONCLICK="clearall()" class="ui-btn my-ui-btn ui-btn-inline" data-inline="true" >Clear</span>
+				</td>
+			  </tr>
+			  <tr>
+				<td></td>
+				<td ID="TimerText" colspan="2">Time till clear-all: <span ID="TimerField" ></span></td>
+			  </tr>
+			  <tr>
+				<td >Scratchpad</td>
+				<td><INPUT TYPE="text" tabindex="5" NAME="scratchpaper" ID="scratchpaper" maxlength="25" onkeyup="setTimer()" ></td>
+				<td><span ID="ToggleScratchpaperCheckBox" name="ToggleScratchpaperCheckBox" class="ui-btn my-ui-btn ui-btn-inline ui-mini my-ui-mini" onClick="toggleNumbers(this)" title="Show or Hide Scratchpad" >Hide</span></td>
+			  </tr>
+			  </table>
+			  <div NAME="output_string" ID="output_string"></div>
+			 </div>
+		</div> <!-- match to outerdiv -->
+	 </div> <!-- match to pwapp div -->
 
-			<div data-role="collapsibleset">
-			  <div data-role="collapsible">
-				<h1>Instructions</h1>
-				<p>Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.</p>
-				<video width="300"  controls>
-				  <source src="PWCipherDemo.mp4" type="video/mp4">
-				Your browser does not support the video tag.
-				</video>
-				<p>To create a password start by entering the name of the web site or app in the String field. Then enter common word or string into the Key field. You use the same key for all web sites and apps. Next enter the length you want the password to be into the Length field. When you click the Calculate button the bottom of the page will be filled wiith the Cipher output.</p>
-				<p>You can use the buttons in the Cipher Output and Standard Characters section to create a password in the Scratchpad text field. Each time you click on a button it will add that character to the Scratchpad field. Use the Shift button to get capital letters. Click on the buttons using a pattern that you keep constant. In this way you will build up a password that is unique to each web site and that is an relatively random series of letters and numbers. More ideas for patterns are in the Tips and Tricks section.</p>
-				<p>Copy the password out of the Scratchpad field and use it wherever you need it. On many smartphones you can copy the field by pressing and holding on it.</p>
-				<p>The input section of the page has a number of Hide/Show buttons. You can use these buttons to show or hide the field that each is next to. This can help you hide your information from people that might be looking over your shoulder. The page also has a Clear button that you can use to clear all the data out of all the fields. In case you forget to use the Clear button, there is a countdown timer that will automatically clear all the fields 2 minutes after you are finished using the page. If you want to restart the time to give yourself more time just click the Calculate or Shift buttons.</p>
-			  </div>
-			  <div data-role="collapsible">
-				<h1>Tips and Tricks</h1>
-				<p>Key to successful use of Password Cipher is having a good patterns from the Cipher Output. There is a lot of variety in the patterns you can use in the Cipher Output to create good passwords. First of all, you should try to include upper and lower case letters, numbers, and special characters. You can get special characters by clicking on the buttons in the Standard Characters section. Here are a few ideas you can use.</p>
-				  <ul>
-					<li>Alternate letters and numbers.
-					<li>Use two from the number column and then two from the letter column (and then repeat).
-					<li>Use one letter and then two numbers and then three letters and then four numbers and so on.
-					<li>Go backwards up the Cipher Output table rather than from the top down.
-					<li>Capitalize every other letter or all vowels or all letters that follow other letters or letters that are in your name.
-					<li>Capitalize all letters except ones that met certain criteria.
-					<li>Always make the 3rd and 5th characters be ones that aren't in the cipher output at all. 
-					<li>Make one of the characters always be a special character.
-					<li>"Shift" the first or third number and make it be the special character that is usually above it on the keyboard (i.e. a 4 becomes a $).
-					<li>Have the password be 8 characters long if it is a .com and 10 characters long if it is a .org. Or make the length dependent on it being a financial site or a social media site.
-				  </ul>
-			  </div>
-			  <div data-role="collapsible">
-				<h1>How the Password Cipher works</h1>
-				<h2>How the Password Cipher works</h2>
-				<p>The Password Cipher works like a very primitive cipher. It is similar to what was used in World War One or what you may have used as a kid if you were kind of nerdish. Password Cipher just makes it easier for you.</p>
-				<p>Password Cipher takes the String you enter (i.e. 'abcde') and converts it to the numbers associated with each letters position in the alphabet. For example a=1 and b=2 and c=3 and so on. It then takes the key you provided (i.e. 'abcde'), converts them into numbers and adds them to the numbers from the letters to get new numbers (i.e. 1+1=2, 2+2=4, 3+3=6 and so on). The resulting list of numbers in this example would be '2,4,6,8,10'. These numbers are then converted back to letters (i.e. 2=b, 4=d, 6=f and so on). These resulting letters and numbers are output in the 'Outputs' columns of the Cipher Output section. In this example, the columns would be '2,4,6,8,10' and 'b,d,f,g,i'. If you want to see how PasswordCipher works you can go into the Settings page and choose to show the input values in the cipher output table.</p>
-				<p>Numbers are included at the end of the Password Cipher alphabet. For example z=26 and 1=27 and 0=36. There is no difference between upper case letters and lower case letters. Password Cipher does not allow for any special characters in the input string. If you request a password that is longer than the String you entered or the Key you entered then Password Cipher just repeats the String or Numbers. For example if you entered 'abc' and '1234' and requested a 6 character long password then Password Cipher would use the String 'abcabc' and the Numbers '12341234'. The Cypher Output would be '2,4,6,5,3,5' and 'b,d,f,e,c,e'.</p>
-				<h2>Risks of using Password Cipher</h2>
-				<p>The number one risk of using Password Cipher is that people looking over your shoulder could see either the passord you create or see the input Numbers and pattern that you use. The best way to reduce this risk is to make sure people aren't able to look at your screen or hands as you use the tool. The next best way is to use the checkboxes in Password Cipher to hide the data that you are entering.</p>
-				<p>The second risk of using Password Cipher is that someone might hack into several of the web sites that you use and look at the passwords that you created. In this case they might be able figure out what your Numbers and pattern are. While you can't stop people from hacking web sites, you can reduce the risk of them getting valuable information by having different Numbers and/or patterns for different classes of sites. For example, your financial web sites could use a different pattern or different Numbers than your non-financial sites. </p>
-			  </div>
+	<div id="settings_page" data-role="page"  data-theme="a">
+		<div class="outerdiv">
+			<div data-role="header" data-theme="a" class="header">
+				<h1>Password Cipher</h1>
+				<a href="#pwapp" class="ui-btn my-ui-btn ui-btn-right ui-mini my-ui-mini" data-transition="slide"  >Back</a>
 			</div>
-		  
-		  </div>
-
-	</div>
+			<div data-role="main" class="ui-content main_body">
+				<div NAME="settings_string" ID="settings_string">
+				</div>
+			</div>
+		</div> <!-- match to outerdiv -->
+	</div>  <!-- match to settings_page div -->
 	
-	 <div id="demo_page" data-role="page"  data-theme="a">
-		 <div data-role="header" data-theme="a" class="header">
-		   <h1>Password Cipher</h1>
-		   <a href="#pwapp" class="ui-btn my-ui-btn ui-btn-right ui-mini my-ui-mini" data-transition="slide"  >PW Cipher</a>
-		 </div>
-		 <div id="demo_div" data-role="main" class="ui-content main_body">
-		 <p>Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.</p>
-		 <p>For a strong password, experts recommend:</p>
-		  <ul>
-			<li>lower case letters
-			<li>upper case letters
-			<li>numbers
-			<li>special characters
-			<li>8+ characters
-			<li>no common words
-			<li>be unique
-		  </ul>
-		  <p>Experts think that "2v4x2L98g#" is a good password. </p>
-		  <p>We think remembering a unique password like this for each web site and app is impossible.</p>
-		  <p>With Password Cipher you only need to remember a common word and a simple pattern. Both are easy to remember.</p>
-		  <p>Password Cipher is available as an app on popular smartphones and tablets as well as a web-app at passwordcipher.com.</p>
-		 </div>
-	 </div>
+	<div id="help_page" data-role="page"  data-theme="a">
+		<div class="outerdiv">
+			<div data-role="header" data-theme="a" class="header">
+				<h1>Password Cipher</h1>
+				<a href="#pwapp" class="ui-btn my-ui-btn ui-btn-right ui-mini my-ui-mini" data-transition="slide" data-direction="reverse" >Back</a>
+			</div>
+			<div id="help_div" data-role="main" class="ui-content main_body">
+				<div data-role="collapsibleset">
+					<div data-role="collapsible">
+						<h1>Instructions</h1>
+						<p>Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.</p>
+						<video width="100%"  controls>
+							<source src="PWCipherDemo.mp4" type="video/mp4">
+							Your browser does not support the video tag.
+						</video>
+						<p>To create a password start by entering the name of the web site or app in the String field. Then enter common word or string into the Key field. You use the same key for all web sites and apps. Next enter the length you want the password to be into the Length field. When you click the Calculate button the bottom of the page will be filled wiith the Cipher output.</p>
+						<p>You can use the buttons in the Cipher Output and Standard Characters section to create a password in the Scratchpad text field. Each time you click on a button it will add that character to the Scratchpad field. Use the Shift button to get capital letters. Click on the buttons using a pattern that you keep constant. In this way you will build up a password that is unique to each web site and that is an relatively random series of letters and numbers. More ideas for patterns are in the Tips and Tricks section.</p>
+						<p>Copy the password out of the Scratchpad field and use it wherever you need it. On many smartphones you can copy the field by pressing and holding on it.</p>
+						<p>The input section of the page has a number of Hide/Show buttons. You can use these buttons to show or hide the field that each is next to. This can help you hide your information from people that might be looking over your shoulder. The page also has a Clear button that you can use to clear all the data out of all the fields. In case you forget to use the Clear button, there is a countdown timer that will automatically clear all the fields 2 minutes after you are finished using the page. If you want to restart the time to give yourself more time just click the Calculate or Shift buttons.</p>
+					</div>
+					<div data-role="collapsible">
+						<h1>Tips and Tricks</h1>
+						<p>Key to successful use of Password Cipher is having a good patterns from the Cipher Output. There is a lot of variety in the patterns you can use in the Cipher Output to create good passwords. First of all, you should try to include upper and lower case letters, numbers, and special characters. You can get special characters by clicking on the buttons in the Standard Characters section. Here are a few ideas you can use.</p>
+						<ul>
+							<li/>Alternate letters and numbers.
+							<li/>Use two from the number column and then two from the letter column (and then repeat).
+							<li/>Use one letter and then two numbers and then three letters and then four numbers and so on.
+							<li/>Go backwards up the Cipher Output table rather than from the top down.
+							<li/>Capitalize every other letter or all vowels or all letters that follow other letters or letters that are in your name.
+							<li/>Capitalize all letters except ones that met certain criteria.
+							<li/>Always make the 3rd and 5th characters be ones that aren't in the cipher output at all. 
+							<li/>Make one of the characters always be a special character.
+							<li/>"Shift" the first or third number and make it be the special character that is usually above it on the keyboard (i.e. a 4 becomes a $).
+							<li/>Have the password be 8 characters long if it is a .com and 10 characters long if it is a .org. Or make the length dependent on it being a financial site or a social media site.
+						</ul>
+					</div>
+					<div data-role="collapsible">
+						<h1>How the Password Cipher works</h1>
+						<h2>How the Password Cipher works</h2>
+						<p>The Password Cipher works like a very primitive cipher. It is similar to what was used in World War One or what you may have used as a kid if you were kind of nerdish. Password Cipher just makes it easier for you.</p>
+						<p>Password Cipher takes the String you enter (i.e. 'abcde') and converts it to the numbers associated with each letters position in the alphabet. For example a=1 and b=2 and c=3 and so on. It then takes the key you provided (i.e. 'abcde'), converts them into numbers and adds them to the numbers from the letters to get new numbers (i.e. 1+1=2, 2+2=4, 3+3=6 and so on). The resulting list of numbers in this example would be '2,4,6,8,10'. These numbers are then converted back to letters (i.e. 2=b, 4=d, 6=f and so on). These resulting letters and numbers are output in the 'Outputs' columns of the Cipher Output section. In this example, the columns would be '2,4,6,8,10' and 'b,d,f,g,i'. If you want to see how PasswordCipher works you can go into the Settings page and choose to show the input values in the cipher output table.</p>
+						<p>Numbers are included at the end of the Password Cipher alphabet. For example z=26 and 1=27 and 0=36. There is no difference between upper case letters and lower case letters. Password Cipher does not allow for any special characters in the input string. If you request a password that is longer than the String you entered or the Key you entered then Password Cipher just repeats the String or Numbers. For example if you entered 'abc' and '1234' and requested a 6 character long password then Password Cipher would use the String 'abcabc' and the Numbers '12341234'. The Cypher Output would be '2,4,6,5,3,5' and 'b,d,f,e,c,e'.</p>
+						<h2>Risks of using Password Cipher</h2>
+						<p>The number one risk of using Password Cipher is that people looking over your shoulder could see either the passord you create or see the input Numbers and pattern that you use. The best way to reduce this risk is to make sure people aren't able to look at your screen or hands as you use the tool. The next best way is to use the checkboxes in Password Cipher to hide the data that you are entering.</p>
+						<p>The second risk of using Password Cipher is that someone might hack into several of the web sites that you use and look at the passwords that you created. In this case they might be able figure out what your Numbers and pattern are. While you can't stop people from hacking web sites, you can reduce the risk of them getting valuable information by having different Numbers and/or patterns for different classes of sites. For example, your financial web sites could use a different pattern or different Numbers than your non-financial sites. </p>
+					</div>
+				</div>
+			</div>
+		</div> <!-- match to outerdiv -->
+	</div> <!-- match to help_page div -->
+	
+	<div id="demo_page" data-role="page"  data-theme="a">
+		<div class="outerdiv">
+			<div data-role="header" data-theme="a" class="header">
+				<h1>Password Cipher</h1>
+				<a href="#pwapp" class="ui-btn my-ui-btn ui-btn-right ui-mini my-ui-mini" data-transition="slide"  >PW Cipher</a>
+			</div>
+			<div id="demo_div" data-role="main" class="ui-content main_body">
+				<p>Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.</p>
+				<p>For a strong password, experts recommend:</p>
+				<ul>
+					<li/>lower case letters
+					<li/>upper case letters
+					<li/>numbers
+					<li/>special characters
+					<li/>8+ characters
+					<li/>no common words
+					<li/>be unique
+				</ul>
+				<p>Experts think that "2v4x2L98g#" is a good password. </p>
+				<p>We think remembering a unique password like this for each web site and app is impossible.</p>
+				<p>With Password Cipher you only need to remember a common word and a simple pattern. Both are easy to remember.</p>
+				<p>Password Cipher is available as an app on popular smartphones and tablets as well as a web-app at passwordcipher.com.</p>
+			</div>
+		</div> <!-- match to outerdiv -->
+	</div> <!-- match to demo_page div -->
 	 
 	<script type="text/javascript">
 		var Alphabet = 'abcdefghijklmnopqrstuvwxyz1234567890';
@@ -248,8 +357,8 @@
 			NumberHash[15]="o";
 			NumberHash[27]="1";
 			NumberHash[12]="L";
-			//test for html5 local storage capability  || location.hostname == ''
-			if(typeof(Storage) == "undefined" ) {
+			//test for html5 local storage capability
+			if(typeof(Storage) == "undefined" || location.hostname == '') {
 				// Sorry! No Web Storage support..  update settings_string with sorry text
 				document.getElementById("settings_string").innerHTML='<p id="Settings_error_message">Sorry, your browser or device does not support saved default settings.</p>';
 				//set/define temp variables. They are already set by the HTML page
@@ -748,8 +857,34 @@
 			}
 		}
 
+		$(document).on('swiperight swipeleft','.outerdiv', function(event) {
+		current_page=$.mobile.activePage.attr('id');
+		if (event.type == 'swiperight') {
+			//$.mobile.changePage("#page2");
+			//$.mobile.changePage(nextpage, {transition: "slide", reverse: false}, true, true);
+			//alert($.mobile.activePage.attr('id'));
+			if(current_page=='pwapp'){
+				$.mobile.changePage("#settings_page", {transition: "slide", reverse: true}, true, true);
+			}
+			if(current_page=='help_page'){
+				$.mobile.changePage("#pwapp", {transition: "slide", reverse: true}, true, true);
+			}
+		}
+		if (event.type == 'swipeleft') {
+			//$.mobile.changePage("#page1");
+			if(current_page=='pwapp'){
+				$.mobile.changePage("#help_page", {transition: "slide", reverse: false}, true, true);
+			}
+			if(current_page=='settings_page'){
+				$.mobile.changePage("#pwapp", {transition: "slide", reverse: false}, true, true);
+			}
+		}
+		});
+		
+		//alert(screen.availWidth);
+		$.event.special.swipe.horizontalDistanceThreshold = 0.15*screen.availWidth; // (default: 30) (pixels) – Swipe horizontal displacement must be less than this.
+		
 		setInterval("displayTimer()",1000);
 	</script> 
-
-	 </BODY>
+</BODY>
 </HTML>
