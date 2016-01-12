@@ -6,7 +6,7 @@
         id        = "com.passwordcipher.app"
         version   = "1.0.2">
 
-    <name>PW Cipher</name>
+    <name>Password Cipher</name>
 
     <description>
         Password Cipher is a free tool that makes strong passwords easy to remember and re-create.
