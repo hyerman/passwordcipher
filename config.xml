@@ -113,8 +113,8 @@
     <!--
 	<icon src="res/icon/webos/icon-64.png"          gap:platform="webos" />
 	-->
-	<icon src="icons/android-icon-48x48.png"  gap:platform="winphone" />
-    <icon src="icons/appicon-152x152.png" gap:platform="winphone"   gap:role="background" />
+	<icon src="icons/win-icon-48x48.png"  gap:platform="winphone" />
+    <icon src="icons/win-icon-152x152.png" gap:platform="winphone"   gap:role="background" />
 
     <!-- Define app splash screen for each platform. -->
 	<!--
