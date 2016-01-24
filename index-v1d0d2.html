@@ -140,27 +140,6 @@
 				padding-bottom: 1em; 
 				vertical-align:top;
 			}
-	
-			/* DEMO STYLING */
-			#hidden_button{
-				min-height: 600px;
-			}
-			#demo_pwd_table {
-				margin-top:5px;
-				margin-bottom:5px;
-				font-family: courier;
-			}
-			#demo_pwd_table td{
-				padding-left: 20px;
-				padding-right: 20px;
-				text-align: center;
-			}
-			#demo_pwd_table th{
-				padding-left: 20px;
-				padding-right: 20px;
-				text-align: center;
-				text-decoration: underline;
-			}
 		@media only screen and (min-width: 400px) {
 			.outerdiv{
 				width: 100%;
@@ -205,15 +184,17 @@
 				font-weight: bold;
 			}
 		}
+		/* comenting out to try on iPad
 		@media only screen and (min-width: 800px) {
 			.outerdiv{
 				width: 600px;
 			}
 		}
+		*/
 	</style>
+	<script src="phonegap.js"></script>
 	<script src="jquery-2.1.4.min.js"></script>
 	<script src="jquery.mobile-1.4.5.min.js"></script>
-	<script src="phonegap.js"></script>
 
 </HEAD>
 
@@ -291,7 +272,7 @@
 						<h1>Instructions</h1>
 						<p>Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.</p>
 						<video width="100%"  controls>
-							<source src="PWCipherDemo.mp4" type="video/mp4">
+							<source src="http://www.passwordcipher.com/PWCipherDemo.mp4" type="video/mp4">
 							Your browser does not support the video tag.
 						</video>
 						<p>To create a password start by entering the name of the web site or app in the String field. Then enter common word or string into the Key field. You use the same key for all web sites and apps. Next enter the length you want the password to be into the Length field. When you click the Calculate button the bottom of the page will be filled wiith the Cipher output.</p>
@@ -344,36 +325,22 @@
 				<h1 id="demo_title">Password Cipher</h1>
 				<a href="#pwapp" class="ui-btn my-ui-btn ui-btn-right ui-mini " data-transition="slide"  >PW Cipher</a>
 			</div>
-			<div id="demo_div" data-role="main" class="ui-content main_body" onclick="DemoClick();">
-				<p>Password Cipher makes it easy to remember:</p>
+			<div id="demo_div" data-role="main" class="ui-content main_body">
+				<p>Password Cipher is a free tool that makes it easy for you to have unique and strong passwords for each app and web site.</p>
+				<p>For a strong password, experts recommend:</p>
 				<ul>
-					<li/>Strong passwords for all your sites and apps
-					<table id="demo_pwd_table">
-						<tr><th>Site</th><th>Password</th></tr>
-						<tr><td>yahoo</td><td>z65ta494#</td></tr>
-						<tr><td>reddit</td><td>v0xi5y61#</td></tr>
-						<tr><td>amazon</td><td>s8g5as99#</td></tr>
-						<tr><td>netflix</td><td>b0tk8n20#</td></tr>
-						<tr><td>paypal</td><td>g6vuwq47#</td></tr>
-					</table>
-					<li/>Passwords you rarely use
+					<li/>lower case letters
+					<li/>upper case letters
+					<li/>numbers
+					<li/>special characters
+					<li/>8+ characters
+					<li/>no common words
+					<li/>be unique
 				</ul>
-				<div id="demo1" style="display: none;">
-					<p>All you have to remember are three simple things:</p>
-					<ul>
-						<li/>A secret key word (i.e. 'forever')
-						<li/>A single digit number (i.e. 8)
-						<li/>A simple pattern
-					</ul>
-					<img id="pattern" style="margin-left: 40px;" src="pattern.gif">
-				</div>
-				<div id="demo2" style="display: none;">
-					<p>In this demo we'll show you:</p>
-					<ul>
-						<li/>An example of using Password Cipher
-						<li/>How easy it is to have strong unique passwords for different sites
-					</ul>
-				</div>
+				<p>Experts think that "2v4x2L98g#" is a good password. </p>
+				<p>We think remembering a unique password like this for each web site and app is impossible.</p>
+				<p>With Password Cipher you only need to remember a common word and a simple pattern. Both are easy to remember.</p>
+				<p>Password Cipher is available as an app on popular smartphones and tablets as well as a web-app at passwordcipher.com.</p>
 			</div>
 		</div> <!-- match to outerdiv -->
 	</div> <!-- match to demo_page div -->
@@ -393,30 +360,8 @@
 		var inputinoutput_default='Hide';
 		var alphadigitkey_default='Alpha';
 		var characterhighlight_default='Show';
-		var demo_count=0;
-		
-		function DemoClick(){
-			if(demo_count==0){
-				demo_count++;
-				document.getElementById("demo1").style.display="block";
-				$('html, body').animate({scrollTop: $("#demo1").offset().top}, 2000);
-			}
-			else if(demo_count==1){
-				demo_count++;
-				document.getElementById("demo2").style.display="block";
-				$('html, body').animate({scrollTop: $("#demo2").offset().top}, 2000);
-			}
-			else{
-				//go to home page
-				$.mobile.changePage("#pwapp");
-			}
-		}
-		function JumpToDemoPage(){
-			$.mobile.changePage("#demo_page");
-		}
 
 		function setup(){
-		
 			AlphabetArray=Alphabet.match(/./g);
 			for (letter in  AlphabetArray)
 			{
@@ -435,7 +380,7 @@
 			NumberHash[27]="1";
 			NumberHash[12]="L";
 			//test for html5 local storage capability
-			if(typeof(Storage) == "undefined" || location.hostname == '') {
+			if(typeof(Storage) == "undefined" ) {
 				// Sorry! No Web Storage support..  update settings_string with sorry text
 				document.getElementById("settings_string").innerHTML='<p id="Settings_error_message">Sorry, your browser or device does not support saved default settings.</p>';
 				//set/define temp variables. They are already set by the HTML page
@@ -516,10 +461,6 @@
 			}
 
 			clearall(); //clear all fields on refresh
-			
-			//demo stuff
-			document.getElementById("output_string").innerHTML='<div id="hidden_button" onclick="JumpToDemoPage()" ></div>';
-
 		}
 		function toggleDefaults(defObj){
 			var defvalue=defObj.innerHTML;
@@ -797,7 +738,6 @@
 
 			document.getElementById("output_string").innerHTML=output_table;
 			setTimer();
-			$('html, body').animate({scrollTop: $("#TimerText").offset().top}, 2000);
 		}
 		function addToString(elem){
 			orig=document.getElementById("scratchpaper").value;
@@ -875,7 +815,7 @@
 			window.location.href = "#pwapp";
 		}
 		function toggleNumbers(myobj){
-			if(navigator.appName != "Microsoft Internet Explorer junk junk"){
+			if(navigator.appName != "Microsoft Internet Explorer dummyerror this should negate the if statement for now"){
 				var mycheck=myobj.innerHTML;
 				var myname=myobj.id;
 				//alert('name '+myname);
