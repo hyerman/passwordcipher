@@ -46,6 +46,12 @@
 			#demo_div{
 				min-height: 800px;
 			}
+			#demo_div2{
+				background-color: white;
+				margin: 5px;
+				padding: 10px;
+				border-radius: 10px;
+			}
 			#pwapp_title, #settings_title, #help_title, #demo_title{
 				margin: 0 auto;
 			}
@@ -345,16 +351,17 @@
 				<a href="#pwapp" class="ui-btn my-ui-btn ui-btn-right ui-mini " data-transition="slide"  >PW Cipher</a>
 			</div>
 			<div id="demo_div" data-role="main" class="ui-content main_body" onclick="DemoClick();">
+			<div id="demo_div2" >
 				<p>Password Cipher makes it easy to remember:</p>
 				<ul>
 					<li/>Strong passwords for all your sites and apps
 					<table id="demo_pwd_table">
 						<tr><th>Site</th><th>Password</th></tr>
-						<tr><td>yahoo</td><td>z65ta494#</td></tr>
-						<tr><td>reddit</td><td>v0xi5y61#</td></tr>
-						<tr><td>amazon</td><td>s8g5as99#</td></tr>
-						<tr><td>netflix</td><td>b0tk8n20#</td></tr>
-						<tr><td>paypal</td><td>g6vuwq47#</td></tr>
+						<tr><td>yahoo</td><td>z65#Ta494</td></tr>
+						<tr><td>reddit</td><td>v0x#I5y61</td></tr>
+						<tr><td>amazon</td><td>s8g#5As99</td></tr>
+						<tr><td>netflix</td><td>b0t#K8n20</td></tr>
+						<tr><td>paypal</td><td>g6v#Uwq47</td></tr>
 					</table>
 					<li/>Passwords you rarely use
 				</ul>
@@ -374,6 +381,7 @@
 						<li/>How easy it is to have strong unique passwords for different sites
 					</ul>
 				</div>
+			</div>
 			</div>
 		</div> <!-- match to outerdiv -->
 	</div> <!-- match to demo_page div -->
