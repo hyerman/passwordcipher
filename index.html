@@ -805,6 +805,7 @@
 			output_table=output_table+'</table>';
 
 			document.getElementById("output_string").innerHTML=output_table;
+			document.getElementById("scratchpaper").value='';
 			setTimer();
 			$('html, body').animate({scrollTop: $("#TimerText").offset().top}, 1000);
 		}
